@@ -3,13 +3,17 @@ import { importPlayersFromApi } from "../services/playerImportService";
 import { prisma } from "../lib/db";
 import { ApiError } from "../utils/apiError";
 import { success } from "../utils/apiResponse";
+import { logger } from "../utils/logger";
 
 // --- funzione GET /players/:id/stats ---
 export async function importPlayers(_: Request, res: Response) {
   try {
+    logger.info("Inizio import giocatori");
     await importPlayersFromApi();
+    logger.info("Import completato");
     res.json({ message: "Import completato con successo" });
-  } catch {
+  } catch (err) {
+    logger.error(err, "Errore durante l'import");
     res.status(500).json({ error: "Errore durante l'import dei giocatori" });
   }
 }
@@ -17,6 +21,7 @@ export async function importPlayers(_: Request, res: Response) {
 // --- funzione GET /players/:id/stats ---
 export async function getPlayerStats(req: Request, res: Response, next: NextFunction) {
   const id = Number(req.params.id);
+  logger.info(`Richiesta stats per player ${id}`);
 
   try {
     const player = await prisma.player.findUnique({
@@ -43,11 +48,14 @@ export async function getPlayerStats(req: Request, res: Response, next: NextFunc
     });
 
     if (!player) {
+      logger.warn(`Player ${id} non trovato`);
       throw new ApiError("Giocatore non trovato", 404);
     }
 
+    logger.info(`Player ${id} trovato`);
     return success(res, player);
   } catch (err) {
+    logger.error(err, `Errore nel recupero statistiche per player ${id}`);
     next(err);
   }
 }

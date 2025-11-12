@@ -1,14 +1,20 @@
 import express from "express";
 import playerRoutes from "./routes/playerRoutes";
 import { errorHandler } from "./utils/apiHandler";
+import dotenv from "dotenv";
+import cors from "cors";
+import helmet from "helmet";
 
 const app = express();
+dotenv.config();
+app.use(helmet());
+app.use(cors());
 app.use(express.json());
 app.use("/players", playerRoutes);
 app.use(errorHandler);
 
-const PORT = 3000;
+const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
 
-app.listen(PORT, async () => {
+app.listen(PORT, () => {
   console.log(`Server attivo su http://localhost:${PORT}`);
 });

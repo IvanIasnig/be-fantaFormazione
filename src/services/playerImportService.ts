@@ -17,6 +17,8 @@ export async function importPlayersFromApi() {
 
     const data = (await response.json()) as ApiResponse;
 
+    // totalPages = data.paging.total;
+
     for (const item of data.response) {
       await savePlayerAndStats(item);
     }
