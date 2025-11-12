@@ -23,19 +23,14 @@ export async function importPlayersFromApi() {
       await savePlayerAndStats(item);
     }
 
-    console.log(`✅ Pagina ${currentPage} completata (${data.response.length} giocatori)`);
-
     currentPage++;
     await new Promise(r => setTimeout(r, 800));
   }
-
-  console.log("🎯 Import completato con successo!");
 }
 
 async function savePlayerAndStats(item: ApiPlayer) {
   const p = item.player;
 
-  // 1️⃣ Upsert del giocatore
   const player = await prisma.player.upsert({
     where: { apiId: p.id },
     update: {
@@ -69,7 +64,6 @@ async function savePlayerAndStats(item: ApiPlayer) {
     },
   });
 
-  // 2️⃣ Cancella statistiche precedenti
   await prisma.statistic.deleteMany({ where: { playerId: player.id } });
 
   // 3️⃣ Inserisci statistiche nuove con tutte le relazioni
@@ -99,7 +93,7 @@ async function savePlayerAndStats(item: ApiPlayer) {
       },
     });
 
-    const statistic = await prisma.statistic.create({
+    await prisma.statistic.create({
       data: {
         playerId: player.id,
         teamId: team.id,
@@ -188,7 +182,5 @@ async function savePlayerAndStats(item: ApiPlayer) {
         },
       },
     });
-
-    console.log(`⚽ Inserita statistica per ${player.name} (${statistic.id})`);
   }
 }
