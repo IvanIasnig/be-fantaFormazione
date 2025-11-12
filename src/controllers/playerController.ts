@@ -1,20 +1,21 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { importPlayersFromApi } from "../services/playerImportService";
 import { prisma } from "../lib/db";
+import { ApiError } from "../utils/apiError";
+import { success } from "../utils/apiResponse";
 
 // --- funzione GET /players/:id/stats ---
 export async function importPlayers(_: Request, res: Response) {
   try {
     await importPlayersFromApi();
     res.json({ message: "Import completato con successo" });
-  } catch (err) {
-    console.error(err);
+  } catch {
     res.status(500).json({ error: "Errore durante l'import dei giocatori" });
   }
 }
 
 // --- funzione GET /players/:id/stats ---
-export async function getPlayerStats(req: Request, res: Response) {
+export async function getPlayerStats(req: Request, res: Response, next: NextFunction) {
   const id = Number(req.params.id);
 
   try {
@@ -42,11 +43,11 @@ export async function getPlayerStats(req: Request, res: Response) {
     });
 
     if (!player) {
-      return res.status(404).json({ error: "Giocatore non trovato" });
+      throw new ApiError("Giocatore non trovato", 404);
     }
-    return res.json(player);
+
+    return success(res, player);
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({ error: "Errore interno del server" });
+    next(err);
   }
 }
