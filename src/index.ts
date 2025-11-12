@@ -1,16 +1,24 @@
 import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-
-dotenv.config();
+import playerRoutes from "./routes/playerRoutes";
+import { prisma } from "./lib/db";
+import { importPlayersFromApi } from "./services/playerImportService";
 
 const app = express();
-app.use(cors());
 app.use(express.json());
+app.use("/players", playerRoutes);
 
-app.get("/", (req, res) => {
-  res.send("🏆 API Fantacalcio - Server attivo!");
+const PORT = 3000;
+
+app.listen(PORT, async () => {
+  console.log(`🚀 Server attivo su http://localhost:${PORT}`);
+
+  try {
+    console.log("📥 Avvio import giocatori da API...");
+    await importPlayersFromApi();
+    console.log("✅ Import completato con successo!");
+  } catch (err) {
+    console.error("❌ Errore durante l'import:", err);
+  } finally {
+    await prisma.$disconnect();
+  }
 });
-
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`🚀 Server avviato su http://localhost:${PORT}`));
