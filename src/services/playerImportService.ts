@@ -6,8 +6,6 @@ export async function importPlayersFromApi() {
   const totalPages: number | null = 4;
 
   while (totalPages === null || currentPage <= totalPages) {
-    console.log(`📄 Fetching page ${currentPage}...`);
-
     const response = await fetch(
       `https://v3.football.api-sports.io/players?league=135&season=2023&page=${currentPage}`,
       {
@@ -66,7 +64,6 @@ async function savePlayerAndStats(item: ApiPlayer) {
 
   await prisma.statistic.deleteMany({ where: { playerId: player.id } });
 
-  // 3️⃣ Inserisci statistiche nuove con tutte le relazioni
   for (const s of item.statistics) {
     const team = await prisma.team.upsert({
       where: { apiId: s.team.id },
