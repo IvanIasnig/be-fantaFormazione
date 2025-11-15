@@ -7,15 +7,11 @@ import { logger } from "../utils/logger";
 
 // --- funzione GET /players/:id/stats ---
 export async function importPlayers(_: Request, res: Response) {
-  try {
-    logger.info("Inizio import giocatori");
-    await importPlayersFromApi();
-    logger.info("Import completato");
-    res.json({ message: "Import completato con successo" });
-  } catch (err) {
-    logger.error(err, "Errore durante l'import");
-    res.status(500).json({ error: "Errore durante l'import dei giocatori" });
-  }
+  res.json({ message: "Import avviato" });
+
+  importPlayersFromApi()
+    .then(() => logger.info("Import completato"))
+    .catch(err => logger.error(err, "Errore durante import"));
 }
 
 // --- funzione GET /players/:id/stats ---

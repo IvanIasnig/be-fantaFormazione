@@ -1,9 +1,10 @@
 import { prisma } from "../lib/db";
 import { ApiPlayer, ApiResponse } from "../types/footballPlayersStatistics";
+import { logger } from "../utils/logger";
 
 export async function importPlayersFromApi() {
   let currentPage = 1;
-  const totalPages: number | null = 4;
+  let totalPages: number | null = null;
 
   while (totalPages === null || currentPage <= totalPages) {
     const response = await fetch(
@@ -17,14 +18,18 @@ export async function importPlayersFromApi() {
 
     const data = (await response.json()) as ApiResponse;
 
-    // totalPages = data.paging.total;
-
-    for (const item of data.response) {
-      await savePlayerAndStats(item);
+    if (!data.paging || !data.response) {
+      logger.error(data);
+      break;
     }
 
+    if (currentPage === 1) {
+      totalPages = data.paging.total;
+    }
+
+    await Promise.all(data.response.map(item => savePlayerAndStats(item)));
+
     currentPage++;
-    await new Promise(r => setTimeout(r, 800));
   }
 }
 
