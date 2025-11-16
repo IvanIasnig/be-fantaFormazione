@@ -39,80 +39,102 @@ export interface ApiPlayerInfo {
 }
 
 export interface ApiStatistic {
-  team: {
-    id: number;
-    name: string;
-    logo: string;
-  };
-  league: {
-    id: number;
-    name: string;
-    country: string;
-    logo: string;
-    flag: string;
-    season: number;
-  };
+  team: ApiTeam;
+  league: ApiLeague;
+  games: ApiGames;
+  substitutes: ApiSubstitutes;
+  shots: ApiShots;
+  goals: ApiGoals;
+  passes: ApiPasses;
+  tackles: ApiTackles;
+  duels: ApiDuels;
+  dribbles: ApiDribbles;
+  fouls: ApiFouls;
+  cards: ApiCards;
+  penalty: ApiPenalty;
+}
 
-  games: {
-    appearences?: number;
-    lineups?: number;
-    minutes?: number;
-    number?: number;
-    position?: string;
-    rating?: string;
-    captain?: boolean;
-  };
+export interface ApiTeam {
+  id: number;
+  name: string;
+  logo: string;
+}
 
-  substitutes: {
-    in?: number;
-    out?: number;
-    bench?: number;
-  };
+export interface ApiLeague {
+  id: number;
+  name: string;
+  country: string;
+  logo: string;
+  flag: string;
+  season: number;
+}
 
-  shots: {
-    total?: number;
-    on?: number;
-  };
+export interface ApiGames {
+  appearences?: number;
+  lineups?: number;
+  minutes?: number;
+  number?: number;
+  position?: string;
+  rating?: string;
+  captain?: boolean;
+}
 
-  goals: {
-    total?: number;
-    conceded?: number;
-    assists?: number;
-    saves?: number;
-  };
-  passes: {
-    total?: number;
-    key?: number;
-    accuracy?: number;
-  };
-  tackles: {
-    total?: number;
-    blocks?: number;
-    interceptions?: number;
-  };
-  duels: {
-    total?: number;
-    won?: number;
-  };
-  dribbles: {
-    attempts?: number;
-    success?: number;
-    past?: number;
-  };
-  fouls: {
-    drawn?: number;
-    committed?: number;
-  };
-  cards: {
-    yellow?: number;
-    yellowred?: number;
-    red?: number;
-  };
-  penalty: {
-    won?: number;
-    commited?: number;
-    scored?: number;
-    missed?: number;
-    saved?: number;
-  };
+export interface ApiSubstitutes {
+  in?: number;
+  out?: number;
+  bench?: number;
+}
+
+export interface ApiShots {
+  total?: number;
+  on?: number;
+}
+
+export interface ApiGoals {
+  total?: number;
+  conceded?: number;
+  assists?: number;
+  saves?: number;
+}
+
+export interface ApiPasses {
+  total?: number;
+  key?: number;
+  accuracy?: number;
+}
+
+export interface ApiTackles {
+  total?: number;
+  blocks?: number;
+  interceptions?: number;
+}
+
+export interface ApiDuels {
+  total?: number;
+  won?: number;
+}
+
+export interface ApiDribbles {
+  attempts?: number;
+  success?: number;
+  past?: number;
+}
+
+export interface ApiFouls {
+  drawn?: number;
+  committed?: number;
+}
+
+export interface ApiCards {
+  yellow?: number;
+  yellowred?: number;
+  red?: number;
+}
+
+export interface ApiPenalty {
+  won?: number;
+  commited?: number;
+  scored?: number;
+  missed?: number;
+  saved?: number;
 }
