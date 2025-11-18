@@ -13,4 +13,21 @@ export const myTeamRepository = {
       include: { player: true },
     });
   },
+
+  async listPlayerIds() {
+    const rows = await prisma.myTeamPlayer.findMany({
+      select: { playerId: true },
+    });
+    return rows.map(r => r.playerId);
+  },
+
+  async removePlayers(playerIds: number[]) {
+    return prisma.myTeamPlayer.deleteMany({
+      where: { playerId: { in: playerIds } },
+    });
+  },
+
+  async clearTeam() {
+    return prisma.myTeamPlayer.deleteMany({});
+  },
 };
